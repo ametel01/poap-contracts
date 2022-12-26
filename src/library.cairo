@@ -2,7 +2,7 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.bool import TRUE
-from starkware.cairo.common.uint256 import Uint256
+from starkware.cairo.common.uint256 import Uint256, uint256_add
 from openzeppelin.token.erc721.library import ERC721
 from ERC721_metadata import ERC721_metadata
 
@@ -119,6 +119,18 @@ namespace Poap {
     ) {
         _mint_token(event_id, token_id, to);
         return ();
+    }
+
+    func mint_event_to_many_users{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        event_id: felt, to_len: felt, to: felt*, i: felt
+    ) {
+        if (i == to_len) {
+            return ();
+        }
+        let last_id = Poap_lastId.read();
+        let current_id = uint256_add(last_id, Uint256(1, 0));
+        mint_token(event_id, current_id, to + i);
+        return mint_event_to_many_users(event_id, to_len, to, i + 1);
     }
 }
 
