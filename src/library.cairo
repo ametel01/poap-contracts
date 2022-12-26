@@ -130,6 +130,7 @@ namespace Poap {
         let last_id = Poap_lastId.read();
         let current_id = uint256_add(last_id, Uint256(1, 0));
         mint_token(event_id, current_id, to + i);
+        Poap_lastId.write(current_id);
         return mint_event_to_many_users(event_id, to_len, to, i + 1);
     }
 }
