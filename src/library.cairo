@@ -102,4 +102,10 @@ namespace Poap {
         ERC721.set_approval_for_all(to, approved);
         return ();
     }
+
+    func transfer_from{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        from_ : felt, to : felt, token_id : Uint256) {
+        ERC721.transfer_from(from_, to, token_id);
+        return();
+    }
 }
