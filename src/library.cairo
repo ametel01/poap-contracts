@@ -104,8 +104,29 @@ namespace Poap {
     }
 
     func transfer_from{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
-        from_ : felt, to : felt, token_id : Uint256) {
+        from_: felt, to: felt, token_id: Uint256
+    ) {
         ERC721.transfer_from(from_, to, token_id);
-        return();
+        return ();
     }
+
+    // @dev Function to mint tokens
+    // @param eventId EventId for the new token
+    // @param to The address that will receive the minted tokens.
+    // @return A boolean that indicates if the operation was successful.
+    func mint_token{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        event_id: felt, token_id: Uint256, to: felt
+    ) {
+        _mint_token(event_id, token_id, to);
+        return ();
+    }
+}
+
+func _mint_token{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    event_id: felt, token_id: Uint256, to: felt
+) -> felt {
+    ERC721._mint(to, token_id);
+    Poap_tokenEvent.write(token_id, event_id);
+    EventToken.emit(event_id, token_id);
+    return (TRUE);
 }
