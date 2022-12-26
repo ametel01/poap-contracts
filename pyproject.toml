@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "poap-contracts"
+version = "0.1.0"
+description = ""
+authors = ["ametel01 <alex-metelli@gmx.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "poap_contracts"}]
+
+[tool.poetry.dependencies]
+python = ">=3.9, <3.10"
+cairo-lang = "^0.10.3"
+starknet-devnet = "^0.4.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
