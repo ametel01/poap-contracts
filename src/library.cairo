@@ -3,7 +3,7 @@
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.uint256 import Uint256
 from openzeppelin.token.erc721.library import ERC721
-from ERC721_metadata import ERC721_base_token_uri
+from ERC721_metadata import ERC721_metadata
 
 @event
 func EventToken(event_id: felt, token_id: Uint256) {
@@ -69,16 +69,22 @@ namespace Poap {
     }(owner: felt, index: felt) -> (token_id: Uint256, event_id: felt) {
         let (token_id) = Poap_token_of_owner_by_index.read(owner, index);
         let (event_id) = Poap_tokenEvent.read(token_id);
-        return (tokenId, eventId);
+        return (token_id, event_id);
     }
 
     // @dev Gets the token uri
     // @return string representing the token uri
-    func tokenURI{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    func token_URI{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         tokenId: Uint256
     ) -> (uri_len: felt, token_uri: felt*) {
-        let (uri_len, uri) = ERC721_base_token_uri(tokenId);
+        let (uri_len, uri) = ERC721_metadata.baseTokenURI(tokenId);
         return (uri_len, uri);
     }
 
+    func set_base_uri{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        base_token_uri_len: felt, base_token_uri: felt*
+    ) {
+        ERC721_metadata.setBaseTokenURI(base_token_uri_len, base_token_uri);
+        return ();
+    }
 }
