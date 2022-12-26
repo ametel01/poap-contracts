@@ -160,6 +160,13 @@ namespace Poap {
         Poap_lastId.write(current_id);
         return mint_user_to_many_events(events_len, events, to, i + 1);
     }
+
+    // @dev Burns a specific ERC721 token.
+    // @param tokenId uint256 id of the ERC721 token to be burned.
+    func burn{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(token_id: Uint256) {
+        ERC721._burn(token_id);
+        return ();
+    }
 }
 
 func _mint_token{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
