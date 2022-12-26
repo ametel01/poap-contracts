@@ -1,6 +1,7 @@
 %lang starknet
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
+from starkware.cairo.common.bool import TRUE
 from starkware.cairo.common.uint256 import Uint256
 from openzeppelin.token.erc721.library import ERC721
 from ERC721_metadata import ERC721_metadata
@@ -85,6 +86,20 @@ namespace Poap {
         base_token_uri_len: felt, base_token_uri: felt*
     ) {
         ERC721_metadata.setBaseTokenURI(base_token_uri_len, base_token_uri);
+        return ();
+    }
+
+    func approve{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        to: felt, token_id: felt
+    ) {
+        ERC721.approve(to, token_id);
+        return ();
+    }
+
+    func set_approval_for_all{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        to: felt, approved: felt
+    ) {
+        ERC721.set_approval_for_all(to, approved);
         return ();
     }
 }
