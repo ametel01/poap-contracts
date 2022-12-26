@@ -141,7 +141,7 @@ namespace Poap {
         let current_id = uint256_add(last_id, Uint256(1, 0));
         mint_token(event_id, current_id, to + i);
         Poap_lastId.write(current_id);
-        mint_event_to_many_users(event_id, to_len, to, i + 1);
+        return mint_event_to_many_users(event_id, to_len, to, i + 1);
     }
 
     // @dev Function to mint tokens
@@ -149,8 +149,16 @@ namespace Poap {
     // @param to The address that will receive the minted tokens.
     // @return A boolean that indicates if the operation was successful.
     func mint_user_to_many_events{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
-        events_len: felt, events: felt*, to: felt
-    ) {
+        events_len: felt, events: felt*, to: felt, i: felt
+    ) -> felt {
+        if (i == events_len) {
+            return TRUE;
+        }
+        let last_id = Poap_lastId.read();
+        let current_id = uint256_add(last_id, Uint256(1, 0));
+        mint_token_with_id(events + i, current_id, to);
+        Poap_lastId.write(current_id);
+        return mint_user_to_many_events(events_len, events, to, i + 1);
     }
 }
 
@@ -160,5 +168,5 @@ func _mint_token{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
     ERC721._mint(to, token_id);
     Poap_tokenEvent.write(token_id, event_id);
     EventToken.emit(event_id, token_id);
-    return (TRUE);
+    return TRUE;
 }
