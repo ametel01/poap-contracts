@@ -115,23 +115,42 @@ namespace Poap {
     // @param to The address that will receive the minted tokens.
     // @return A boolean that indicates if the operation was successful.
     func mint_token{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        event_id: felt, to: felt
+    ) {
+        let last_id = Poap_lastId.read();
+        let current_id = uint256_add(last_id, Uint256(1, 0));
+        return _mint_token(event_id, current_id, to);
+    }
+    func mint_token_with_id{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         event_id: felt, token_id: Uint256, to: felt
     ) {
-        _mint_token(event_id, token_id, to);
-        return ();
+        return _mint_token(event_id, token_id, to);
     }
 
+    // @dev Function to mint tokens
+    // @param eventId EventId for the new token
+    // @param to The address that will receive the minted tokens.
+    // @return A boolean that indicates if the operation was successful.
     func mint_event_to_many_users{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         event_id: felt, to_len: felt, to: felt*, i: felt
-    ) {
+    ) -> felt {
         if (i == to_len) {
-            return ();
+            return (TRUE);
         }
         let last_id = Poap_lastId.read();
         let current_id = uint256_add(last_id, Uint256(1, 0));
         mint_token(event_id, current_id, to + i);
         Poap_lastId.write(current_id);
-        return mint_event_to_many_users(event_id, to_len, to, i + 1);
+        mint_event_to_many_users(event_id, to_len, to, i + 1);
+    }
+
+    // @dev Function to mint tokens
+    // @param eventIds EventIds to assing to user
+    // @param to The address that will receive the minted tokens.
+    // @return A boolean that indicates if the operation was successful.
+    func mint_user_to_many_events{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        events_len: felt, events: felt*, to: felt
+    ) {
     }
 }
 
