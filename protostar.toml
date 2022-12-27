@@ -3,5 +3,5 @@ protostar-version = "0.9.1"
 cairo-path = ["src", "lib/cairo_contracts/src"]
 
 [contracts]
-main = ["src/library.cairo"]
+main = ["src/Poap.cairo"]
 
