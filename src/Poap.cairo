@@ -47,3 +47,19 @@ func setBaseURI{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}
     Poap.set_base_uri(base_token_uri_len, base_token_uri);
     return ();
 }
+
+@external
+func approve{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    to: felt, tokenId: Uint256
+) {
+    Poap.approve(to, tokenId);
+    return ();
+}
+
+@external
+func setApprovalForAll{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    to: felt, approved: felt
+) {
+    Poap.set_approval_for_all(to, approved);
+    return ();
+}
