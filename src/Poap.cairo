@@ -63,3 +63,11 @@ func setApprovalForAll{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_che
     Poap.set_approval_for_all(to, approved);
     return ();
 }
+
+@external
+func transferFrom{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    from_: felt, to: felt, tokenId: Uint256
+) {
+    Poap.transfer_from(from_, to, tokenId);
+    return ();
+}
