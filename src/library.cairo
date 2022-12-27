@@ -90,7 +90,7 @@ namespace Poap {
     }
 
     func approve{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
-        to: felt, token_id: felt
+        to: felt, token_id: Uint256
     ) {
         ERC721.approve(to, token_id);
         return ();
