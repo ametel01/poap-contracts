@@ -70,4 +70,12 @@ namespace PoapRoles {
         assert is_minter = TRUE;
         return ();
     }
+
+    func add_event_minter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        event_id: felt, account: felt
+    ) {
+        PoapRoles_minters.write(event_id, account, TRUE);
+        EventMinterAdded.emit(event_id, account);
+        return ();
+    }
 }
