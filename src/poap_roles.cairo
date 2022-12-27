@@ -61,4 +61,13 @@ namespace PoapRoles {
         }
         return TRUE;
     }
+
+    func only_event_minter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        event_id: felt
+    ) {
+        let (message_sender) = get_caller_address();
+        let is_minter = is_event_minter(event_id, message_sender);
+        assert is_minter = TRUE;
+        return ();
+    }
 }
