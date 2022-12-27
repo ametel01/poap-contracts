@@ -39,3 +39,11 @@ func tokenURI{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
     let (uri_len, uri) = Poap.token_uri(tokenId);
     return (uri_len, uri);
 }
+
+@external
+func setBaseURI{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    base_token_uri_len: felt, base_token_uri: felt*
+) {
+    Poap.set_base_uri(base_token_uri_len, base_token_uri);
+    return ();
+}
