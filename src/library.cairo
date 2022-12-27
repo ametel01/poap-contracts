@@ -43,21 +43,21 @@ namespace Poap {
     // @dev Gets the token name
     // @return string representing the token name
     func name{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -> felt {
-        let res = Poap_name.read();
-        return name;
+        let (res) = Poap_name.read();
+        return res;
     }
 
     // @dev Gets the token symbol
     // @return string representing the token symbol
     func symbol{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -> felt {
-        let res = Poap_symbol.read();
+        let (res) = Poap_symbol.read();
         return res;
     }
 
     func token_event{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         token_id: Uint256
     ) -> felt {
-        let res = Poap_tokenEvent.read(token_id);
+        let (res) = Poap_tokenEvent.read(token_id);
         return res;
     }
 
@@ -75,10 +75,10 @@ namespace Poap {
 
     // @dev Gets the token uri
     // @return string representing the token uri
-    func token_URI{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
-        tokenId: Uint256
+    func token_uri{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        token_id: Uint256
     ) -> (uri_len: felt, token_uri: felt*) {
-        let (uri_len, uri) = ERC721_metadata.baseTokenURI(tokenId);
+        let (uri_len, uri) = ERC721_metadata.tokenURI(token_id);
         return (uri_len, uri);
     }
 
