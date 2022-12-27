@@ -2,6 +2,7 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.bool import TRUE
+from starkware.cairo.common.math_cmp import is_le_felt
 from starkware.starknet.common.syscalls import get_caller_address
 from openzeppelin.access.accesscontrol.library import AccessControl
 
@@ -47,5 +48,17 @@ namespace PoapRoles {
             assert is_admin = TRUE;
         }
         return ();
+    }
+
+    func is_event_minter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        event_id: felt, account: felt
+    ) -> felt {
+        let (is_admin) = PoapRoles_admins.read(account);
+        let (is_minter) = PoapRoles_minters.read(event_id, account);
+        with_attr error_message("Account is not minter or admin") {
+            let cond = is_le_felt(1, is_admin + is_minter);
+            assert cond = TRUE;
+        }
+        return TRUE;
     }
 }
