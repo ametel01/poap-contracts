@@ -25,6 +25,10 @@ func EventMinterRemoved(event_id: felt, account: felt) {
 func PoapRoles_admins(address: felt) -> (is_admin: felt) {
 }
 
+@storage_var
+func PoapRoles_minters(event_id: felt, account: felt) -> (is_minter: felt) {
+}
+
 namespace PoapRoles {
     func initializer{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         sender: felt
