@@ -132,6 +132,7 @@ namespace Poap {
         let (current_id, _) = uint256_add(last_id, Uint256(1, 0));
         return _mint_token(event_id, current_id, to);
     }
+
     func mint_token_with_id{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         event_id: felt, token_id: Uint256, to: felt
     ) -> felt {
