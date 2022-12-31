@@ -23,4 +23,10 @@ namespace Poap_pausable {
         Poap_pausable_paused.write(FALSE);
         return ();
     }
+
+    // * @return true if the contract is paused, false otherwise.
+    func paused{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -> felt {
+        let res = Poap_pausable_paused.read();
+        return (res);
+    }
 }
