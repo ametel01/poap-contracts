@@ -4,7 +4,10 @@ from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.bool import TRUE
 from starkware.cairo.common.uint256 import Uint256, uint256_add
 from openzeppelin.token.erc721.library import ERC721
+from openzeppelin.token.erc721.enuerable import ERC721Enumerable
 from erc721.library import ERC721_metadata
+from pausable.library import PoapPausable
+from roles.library import PoapRoles
 
 @event
 func EventToken(event_id: felt, token_id: Uint256) {
@@ -85,6 +88,8 @@ namespace Poap {
     func set_base_uri{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         base_token_uri_len: felt, base_token_uri: felt*
     ) {
+        PoapRoles.only_admin();
+        PoapPausable.when_not_paused();
         ERC721_metadata.setBaseTokenURI(base_token_uri_len, base_token_uri);
         return ();
     }
@@ -92,6 +97,7 @@ namespace Poap {
     func approve{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         to: felt, token_id: Uint256
     ) {
+        PoapPausable.when_not_paused();
         ERC721.approve(to, token_id);
         return ();
     }
@@ -99,6 +105,7 @@ namespace Poap {
     func set_approval_for_all{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         to: felt, approved: felt
     ) {
+        PoapPausable.when_not_paused();
         ERC721.set_approval_for_all(to, approved);
         return ();
     }
@@ -106,6 +113,7 @@ namespace Poap {
     func transfer_from{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         from_: felt, to: felt, token_id: Uint256
     ) {
+        PoapPausable.when_not_paused();
         ERC721.transfer_from(from_, to, token_id);
         return ();
     }
@@ -117,6 +125,8 @@ namespace Poap {
     func mint_token{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         event_id: felt, to: felt
     ) {
+        PoapRoles.only_event_minter();
+        PoapPausable.when_not_paused();
         let last_id = Poap_lastId.read();
         let current_id = uint256_add(last_id, Uint256(1, 0));
         return _mint_token(event_id, current_id, to);
@@ -124,6 +134,8 @@ namespace Poap {
     func mint_token_with_id{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         event_id: felt, token_id: Uint256, to: felt
     ) {
+        PoapRoles.only_event_minter();
+        PoapPausable.when_not_paused();
         return _mint_token(event_id, token_id, to);
     }
 
@@ -134,6 +146,8 @@ namespace Poap {
     func mint_event_to_many_users{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         event_id: felt, to_len: felt, to: felt*, i: felt
     ) -> felt {
+        PoapRoles.only_event_minter();
+        PoapPausable.when_not_paused();
         if (i == to_len) {
             return (TRUE);
         }
@@ -151,6 +165,8 @@ namespace Poap {
     func mint_user_to_many_events{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         events_len: felt, events: felt*, to: felt, i: felt
     ) -> felt {
+        PoapRoles.only_admin();
+        PoapPausable.when_not_paused();
         if (i == events_len) {
             return TRUE;
         }
