@@ -3,6 +3,7 @@ protostar-version = "0.9.1"
 cairo-path = ["src", "lib/cairo_contracts/src"]
 
 [contracts]
-main = ["src/Poap.cairo"]
-poap_roles = ["src/poap_roles.cairo"]
+main = ["src/poap/Poap.cairo"]
+poap_roles = ["src/roles/library.cairo"]
+poap_pausable = ["src/pausable/library.cairo"]
 

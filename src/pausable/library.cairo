@@ -3,7 +3,7 @@
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.bool import TRUE, FALSE
 from starkware.starknet.common.syscalls import get_caller_address
-from poap_roles import PoapRoles
+from roles.library import PoapRoles
 
 // @title Pausable
 // @dev Base contract which allows children to implement an emergency stop mechanism.

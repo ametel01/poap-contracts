@@ -4,7 +4,7 @@ from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.bool import TRUE
 from starkware.cairo.common.uint256 import Uint256, uint256_add
 from openzeppelin.token.erc721.library import ERC721
-from ERC721_metadata import ERC721_metadata
+from erc721.library import ERC721_metadata
 
 @event
 func EventToken(event_id: felt, token_id: Uint256) {
