@@ -4,6 +4,14 @@ from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.uint256 import Uint256
 from poap.library import Poap
 
+@constructor
+func constructor{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    name: felt, symbol: felt, uri_len: felt, uri: felt*, admins_len: felt, admins: felt*
+) {
+    Poap.initialize(name, symbol, uri_len, uri, admins_len, admins);
+    return ();
+}
+
 @view
 func name{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -> (res: felt) {
     let res = Poap.name();
