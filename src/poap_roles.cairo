@@ -102,4 +102,13 @@ namespace PoapRoles {
         AdminRemoved.emit(message_sender);
         return ();
     }
+
+    func remove_minter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        event_id: felt, account: felt
+    ) {
+        only_admin();
+        PoapRoles_minters.write(event_id, account);
+        EventMinterRemoved.emit(event_id, message_sender);
+        return ();
+    }
 }
