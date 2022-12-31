@@ -93,4 +93,13 @@ namespace PoapRoles {
         EventMinterRemoved.emit(event_id, message_sender);
         return ();
     }
+
+    func renounce_admin{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        account: felt
+    ) {
+        let message_sender = get_caller_address();
+        PoapRoles_admins.write(message_sender, FALSE);
+        AdminRemoved.emit(message_sender);
+        return ();
+    }
 }
