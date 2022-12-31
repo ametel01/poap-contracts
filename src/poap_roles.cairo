@@ -78,4 +78,19 @@ namespace PoapRoles {
         EventMinterAdded.emit(event_id, account);
         return ();
     }
+
+    func add_admin{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(account: felt) {
+        PoapRoles_admins.write(account, TRUE);
+        AdminAdded.emit(account);
+        return ();
+    }
+
+    func renounce_event_minter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        event_id: felt
+    ) {
+        let message_sender = get_caller_address();
+        PoapRoles_minters.write(event_id, message_sender, FALSE);
+        EventMinterRemoved.emit(event_id, message_sender);
+        return ();
+    }
 }
