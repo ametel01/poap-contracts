@@ -13,3 +13,7 @@ func Paused(account: felt) {
 @event
 func Unpaused(account: felt) {
 }
+
+@storage_var
+func Poap_pausable_paused() -> (is_paused: felt) {
+}
