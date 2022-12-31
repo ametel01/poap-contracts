@@ -3,7 +3,6 @@
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.bool import TRUE
 from starkware.cairo.common.math_cmp import is_le_felt
-from starkware.cairo.common.uint256 import Uint256
 from starkware.starknet.common.syscalls import get_caller_address
 from openzeppelin.access.accesscontrol.library import AccessControl
 
@@ -16,11 +15,11 @@ func AdminRemoved(address: felt) {
 }
 
 @event
-func EventMinterAdded(event_id: Uint256, account: felt) {
+func EventMinterAdded(event_id: felt, account: felt) {
 }
 
 @event
-func EventMinterRemoved(event_id: Uint256, account: felt) {
+func EventMinterRemoved(event_id: felt, account: felt) {
 }
 
 @storage_var
@@ -28,7 +27,7 @@ func PoapRoles_admins(address: felt) -> (is_admin: felt) {
 }
 
 @storage_var
-func PoapRoles_minters(event_id: Uint256, account: felt) -> (is_minter: felt) {
+func PoapRoles_minters(event_id: felt, account: felt) -> (is_minter: felt) {
 }
 
 namespace PoapRoles {
@@ -52,7 +51,7 @@ namespace PoapRoles {
     }
 
     func is_event_minter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
-        event_id: Uint256, account: felt
+        event_id: felt, account: felt
     ) -> felt {
         let (is_admin) = PoapRoles_admins.read(account);
         let (is_minter) = PoapRoles_minters.read(event_id, account);
@@ -64,7 +63,7 @@ namespace PoapRoles {
     }
 
     func only_event_minter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
-        event_id: Uint256
+        event_id: felt
     ) {
         let (message_sender) = get_caller_address();
         let is_minter = is_event_minter(event_id, message_sender);
@@ -73,7 +72,7 @@ namespace PoapRoles {
     }
 
     func add_event_minter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
-        event_id: Uint256, account: felt
+        event_id: felt, account: felt
     ) {
         PoapRoles_minters.write(event_id, account, TRUE);
         EventMinterAdded.emit(event_id, account);
@@ -87,7 +86,7 @@ namespace PoapRoles {
     }
 
     func renounce_event_minter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
-        event_id: Uint256
+        event_id: felt
     ) {
         let message_sender = get_caller_address();
         PoapRoles_minters.write(event_id, message_sender, FALSE);
@@ -102,10 +101,5 @@ namespace PoapRoles {
         PoapRoles_admins.write(message_sender, FALSE);
         AdminRemoved.emit(message_sender);
         return ();
-    }
-
-    func remove_minter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
-        event_id: Uint256
-    ) {
     }
 }
