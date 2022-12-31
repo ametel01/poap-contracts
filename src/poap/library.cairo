@@ -183,6 +183,25 @@ namespace Poap {
         ERC721._burn(token_id);
         return ();
     }
+
+    func initialize{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        name: felt, symbol: felt, uri_len: felt, uri: felt*, admins_len: felt, admins: felt*
+    ) {
+        let message_sender = get_caller_address();
+        ERC721.initializer();
+        ERC721Enumerable.initializer();
+        ERC721_metadata.initializer();
+        PoapRoles.initializer(message_sender);
+        PoapPausable.initializer();
+
+        // Add the requested admins
+        _add_admins(admins_len, admins, 0);
+
+        Poap_name.write(name);
+        Poap_symbol.write(symbol);
+        Poap.set_base_uri(uri_len, uri);
+        return ();
+    }
 }
 
 func _mint_token{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
@@ -192,4 +211,14 @@ func _mint_token{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
     Poap_tokenEvent.write(token_id, event_id);
     EventToken.emit(event_id, token_id);
     return TRUE;
+}
+
+func _add_admins{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    admins_len: felt, admins: felt*, i: felt
+) {
+    if (i == admins_len) {
+        return ();
+    }
+    PoapRoles.add_admin(admins + i);
+    return _add_admins(admins_len, admins, i + 1);
 }
