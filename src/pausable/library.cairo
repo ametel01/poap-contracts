@@ -55,7 +55,7 @@ namespace PoapPausable {
         PoapRoles.only_admin();
         when_not_paused();
         Poap_pausable_paused.write(TRUE);
-        let message_sender = get_caller_address();
+        let (message_sender) = get_caller_address();
         Paused.emit(message_sender);
         return ();
     }
@@ -65,7 +65,7 @@ namespace PoapPausable {
         PoapRoles.only_admin();
         when_not_paused();
         Poap_pausable_paused.write(FALSE);
-        let message_sender = get_caller_address();
+        let (message_sender) = get_caller_address();
         Unpaused.emit(message_sender);
         return ();
     }
