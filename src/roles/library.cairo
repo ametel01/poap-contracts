@@ -34,9 +34,11 @@ namespace PoapRoles {
     func initializer{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         sender: felt
     ) {
-        let is_admin = PoapRoles_admins.read(sender);
-        if (is_admin != TRUE) {
+        alloc_locals;
+        let (is_admin) = PoapRoles_admins.read(sender);
+        if (is_admin == FALSE) {
             PoapRoles_admins.write(sender, TRUE);
+            return ();
         }
         return ();
     }
