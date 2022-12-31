@@ -82,6 +82,38 @@ func transferFrom{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_pt
 }
 
 @external
+func mintToken{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    event_id: felt, to: felt
+) {
+    Poap.mint_token(event_id, to);
+    return ();
+}
+
+@external
+func mintTokenWithId{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    event_id: felt, token_id: Uint256, to: felt
+) {
+    Poap.mint_token_with_id(event_id, token_id, to);
+    return ();
+}
+
+@external
+func mintEventToManyUsers{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    event_id: felt, to_len: felt, to: felt*
+) {
+    Poap.mint_event_to_many_users(event_id, to_len, to, 0);
+    return ();
+}
+
+@external
+func mintUserToManyEvents{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    events_len: felt, events: felt*, to: felt, i: felt
+) {
+    Poap.mint_user_to_many_events(events_len, events, to, 0);
+    return ();
+}
+
+@external
 func pause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
     PoapPausable.pause();
     return ();
