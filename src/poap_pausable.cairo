@@ -17,3 +17,10 @@ func Unpaused(account: felt) {
 @storage_var
 func Poap_pausable_paused() -> (is_paused: felt) {
 }
+
+namespace Poap_pausable {
+    func initialize{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
+        Poap_pausable_paused.write(FALSE);
+        return ();
+    }
+}
