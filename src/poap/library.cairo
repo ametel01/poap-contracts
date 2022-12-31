@@ -3,8 +3,9 @@
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.bool import TRUE
 from starkware.cairo.common.uint256 import Uint256, uint256_add
+from starkware.starknet.common.syscalls import get_caller_address
 from openzeppelin.token.erc721.library import ERC721
-from openzeppelin.token.erc721.enuerable import ERC721Enumerable
+from openzeppelin.token.erc721.enumerable.library import ERC721Enumerable
 from erc721.library import ERC721_metadata
 from pausable.library import PoapPausable
 from roles.library import PoapRoles
@@ -124,17 +125,17 @@ namespace Poap {
     // @return A boolean that indicates if the operation was successful.
     func mint_token{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         event_id: felt, to: felt
-    ) {
-        PoapRoles.only_event_minter();
+    ) -> felt {
+        PoapRoles.only_event_minter(event_id);
         PoapPausable.when_not_paused();
-        let last_id = Poap_lastId.read();
-        let current_id = uint256_add(last_id, Uint256(1, 0));
+        let (last_id) = Poap_lastId.read();
+        let (current_id, _) = uint256_add(last_id, Uint256(1, 0));
         return _mint_token(event_id, current_id, to);
     }
     func mint_token_with_id{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         event_id: felt, token_id: Uint256, to: felt
-    ) {
-        PoapRoles.only_event_minter();
+    ) -> felt {
+        PoapRoles.only_event_minter(event_id);
         PoapPausable.when_not_paused();
         return _mint_token(event_id, token_id, to);
     }
@@ -146,15 +147,15 @@ namespace Poap {
     func mint_event_to_many_users{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         event_id: felt, to_len: felt, to: felt*, i: felt
     ) -> felt {
-        PoapRoles.only_event_minter();
+        PoapRoles.only_event_minter(event_id);
         PoapPausable.when_not_paused();
+        let (last_id) = Poap_lastId.read();
+        let (current_id, _) = uint256_add(last_id, Uint256(i + 1, 0));
         if (i == to_len) {
+            Poap_lastId.write(current_id);
             return (TRUE);
         }
-        let last_id = Poap_lastId.read();
-        let current_id = uint256_add(last_id, Uint256(1, 0));
-        mint_token(event_id, current_id, to + i);
-        Poap_lastId.write(current_id);
+        _mint_token(event_id, current_id, to[i]);
         return mint_event_to_many_users(event_id, to_len, to, i + 1);
     }
 
@@ -165,14 +166,15 @@ namespace Poap {
     func mint_user_to_many_events{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         events_len: felt, events: felt*, to: felt, i: felt
     ) -> felt {
+        alloc_locals;
         PoapRoles.only_admin();
         PoapPausable.when_not_paused();
         if (i == events_len) {
             return TRUE;
         }
-        let last_id = Poap_lastId.read();
-        let current_id = uint256_add(last_id, Uint256(1, 0));
-        mint_token_with_id(events + i, current_id, to);
+        let (last_id) = Poap_lastId.read();
+        let (current_id, _) = uint256_add(last_id, Uint256(1, 0));
+        mint_token_with_id(events[i], current_id, to);
         Poap_lastId.write(current_id);
         return mint_user_to_many_events(events_len, events, to, i + 1);
     }
@@ -187,8 +189,8 @@ namespace Poap {
     func initialize{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         name: felt, symbol: felt, uri_len: felt, uri: felt*, admins_len: felt, admins: felt*
     ) {
-        let message_sender = get_caller_address();
-        ERC721.initializer();
+        let (message_sender) = get_caller_address();
+        ERC721.initializer(name, symbol);
         ERC721Enumerable.initializer();
         ERC721_metadata.initializer();
         PoapRoles.initializer(message_sender);
@@ -210,7 +212,7 @@ func _mint_token{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
     ERC721._mint(to, token_id);
     Poap_tokenEvent.write(token_id, event_id);
     EventToken.emit(event_id, token_id);
-    return TRUE;
+    return (TRUE);
 }
 
 func _add_admins{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
@@ -219,6 +221,6 @@ func _add_admins{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
     if (i == admins_len) {
         return ();
     }
-    PoapRoles.add_admin(admins + i);
+    PoapRoles.add_admin(admins[i]);
     return _add_admins(admins_len, admins, i + 1);
 }
