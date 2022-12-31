@@ -3,6 +3,7 @@
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.uint256 import Uint256
 from poap.library import Poap
+from pausable.library import PoapPausable
 
 @constructor
 func constructor{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
@@ -77,5 +78,17 @@ func transferFrom{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_pt
     from_: felt, to: felt, tokenId: Uint256
 ) {
     Poap.transfer_from(from_, to, tokenId);
+    return ();
+}
+
+@external
+func pause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
+    PoapPausable.pause();
+    return ();
+}
+
+@external
+func unpause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
+    PoapPausable.unpause();
     return ();
 }
