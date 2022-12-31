@@ -1,7 +1,7 @@
 %lang starknet
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
-from starkware.cairo.common.bool import TRUE
+from starkware.cairo.common.bool import TRUE, FALSE
 from starkware.cairo.common.math_cmp import is_le_felt
 from starkware.starknet.common.syscalls import get_caller_address
 from openzeppelin.access.accesscontrol.library import AccessControl
@@ -109,6 +109,7 @@ namespace PoapRoles {
         event_id: felt, account: felt
     ) {
         only_admin();
+        let message_sender = get_caller_address();
         PoapRoles_minters.write(event_id, account);
         EventMinterRemoved.emit(event_id, message_sender);
         return ();
