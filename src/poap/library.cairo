@@ -130,6 +130,7 @@ namespace Poap {
         PoapPausable.when_not_paused();
         let (last_id) = Poap_lastId.read();
         let (current_id, _) = uint256_add(last_id, Uint256(1, 0));
+        Poap_lastId.write(current_id);
         return _mint_token(event_id, current_id, to);
     }
 
