@@ -161,3 +161,19 @@ func test_mint_user_to_many_events{syscall_ptr: felt*, pedersen_ptr: HashBuiltin
 
     return ();
 }
+
+@external
+func test_pause_unpause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
+    alloc_locals;
+    let addresses = deploy();
+
+    let event_id = 1;
+    Poap.pause(addresses.poap);
+    %{ expect_revert(error_message="Poap requires to not be paused") %}
+    Poap.mintToken(addresses.poap, event_id, addresses.user);
+
+    Poap.unpause(addresses.poap);
+    Poap.mintToken(addresses.poap, event_id, addresses.user);
+
+    return ();
+}
