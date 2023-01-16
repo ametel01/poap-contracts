@@ -55,7 +55,12 @@ func deploy{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -
         deploy(prepared)
         ids.contracts.poap = prepared.contract_address
 
-        print(f"poap address: {ids.contracts.poap}\nadmin1: {ids.contracts.admin1}\nadmin2: {ids.contracts.admin2}\nadmin3: {ids.contracts.admin3}")
+        print(f"poap address: {ids.contracts.poap}")
+        print(f"admin1 address: {ids.contracts.admin1}")
+        print(f"admin2 address: {ids.contracts.admin2}")
+        print(f"admin3 address: {ids.contracts.admin3}")
+        print(f"minter address: {ids.contracts.minter}")
+        print(f"user address: {ids.contracts.user}")
     %}
     return contracts;
 }
