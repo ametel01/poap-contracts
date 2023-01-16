@@ -21,6 +21,9 @@ namespace Poap {
     ) {
     }
 
+    func isEventMinter(event_id: felt, address: felt) -> (res: felt) {
+    }
+
     func mintToken(event_id: felt, to: felt) {
     }
 
@@ -33,9 +36,24 @@ namespace Poap {
     func mintUserToManyEvents(events_len: felt, events: felt*, to: felt) {
     }
 
+    func paused() -> (res: felt) {
+    }
+
     func pause() {
     }
 
     func unpause() {
+    }
+
+    func addEventMinter(eventId: felt, account: felt) {
+    }
+
+    func removeEventMinter(eventId: felt, account: felt) {
+    }
+
+    func renounceEventMinter(eventId: felt) {
+    }
+
+    func renounceAdmin() {
     }
 }
