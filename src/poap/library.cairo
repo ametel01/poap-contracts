@@ -181,11 +181,6 @@ namespace Poap {
         let (current_id, _) = uint256_add(last_id, Uint256(1, 0));
         mint_token_with_id(events[i], current_id, to);
         Poap_lastId.write(current_id);
-        %{
-            # append the newly created file to have all the logs for this run
-            with open("mock_logs.txt", "a+") as f:
-                f.write(f"token_id: {ids.current_id.low}, ")
-        %}
         return mint_user_to_many_events(events_len, events, to, i + 1);
     }
 
