@@ -13,6 +13,7 @@ func constructor{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
     return ();
 }
 
+// VIEWS
 @view
 func name{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -> (res: felt) {
     let res = Poap.name();
@@ -43,7 +44,7 @@ func tokenEvent{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}
 
 @view
 func tokenDetailsOfOwnerByIndex{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
-    owner: felt, index: felt
+    owner: felt, index: Uint256
 ) -> (tokenId: Uint256, eventId: felt) {
     let (tokenId, eventId) = Poap.token_details_of_owner_by_index(owner, index);
     return (tokenId, eventId);
@@ -64,6 +65,8 @@ func setBaseURI{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}
     Poap.set_base_uri(base_token_uri_len, base_token_uri);
     return ();
 }
+
+// CORE FUNCTIONALITIES
 
 @external
 func approve{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
@@ -115,7 +118,7 @@ func mintEventToManyUsers{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_
 
 @external
 func mintUserToManyEvents{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
-    events_len: felt, events: felt*, to: felt, i: felt
+    events_len: felt, events: felt*, to: felt
 ) {
     Poap.mint_user_to_many_events(events_len, events, to, 0);
     return ();
