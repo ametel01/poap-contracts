@@ -39,10 +39,6 @@ func Poap_lastId() -> (token_id: Uint256) {
 func Poap_tokenEvent(token_id: Uint256) -> (event_id: felt) {
 }
 
-@storage_var
-func Poap_token_of_owner_by_index(token_index: felt, owner: felt) -> (token_id: Uint256) {
-}
-
 namespace Poap {
     // @dev Gets the token name
     // @return string representing the token name
@@ -79,8 +75,8 @@ namespace Poap {
     // @return uint256 token ID at the given index of the tokens list owned by the requested address
     func token_details_of_owner_by_index{
         syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
-    }(owner: felt, index: felt) -> (token_id: Uint256, event_id: felt) {
-        let (token_id) = Poap_token_of_owner_by_index.read(owner, index);
+    }(owner: felt, index: Uint256) -> (token_id: Uint256, event_id: felt) {
+        let (token_id) = ERC721Enumerable.token_of_owner_by_index(owner, index);
         let (event_id) = Poap_tokenEvent.read(token_id);
         return (token_id, event_id);
     }
@@ -185,6 +181,11 @@ namespace Poap {
         let (current_id, _) = uint256_add(last_id, Uint256(1, 0));
         mint_token_with_id(events[i], current_id, to);
         Poap_lastId.write(current_id);
+        %{
+            # append the newly created file to have all the logs for this run
+            with open("mock_logs.txt", "a+") as f:
+                f.write(f"token_id: {ids.current_id.low}, ")
+        %}
         return mint_user_to_many_events(events_len, events, to, i + 1);
     }
 
@@ -218,7 +219,7 @@ namespace Poap {
 func _mint_token{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
     event_id: felt, token_id: Uint256, to: felt
 ) -> felt {
-    ERC721._mint(to, token_id);
+    ERC721Enumerable._mint(to, token_id);
     Poap_lastId.write(token_id);
     Poap_tokenEvent.write(token_id, event_id);
     EventToken.emit(event_id, token_id);
