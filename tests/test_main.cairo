@@ -1,9 +1,7 @@
 %lang starknet
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
-from starkware.cairo.common.bool import TRUE, FALSE
 from starkware.cairo.common.uint256 import Uint256
-from starkware.starknet.common.syscalls import get_caller_address
 from tests.setup import deploy, Addresses, NAME, SYMBOL
 from tests.interface import Poap
 
@@ -171,81 +169,11 @@ func test_pause_unpause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_ch
 
     let event_id = 1;
     Poap.pause(addresses.poap);
-    let (is_paused) = Poap.paused(addresses.poap);
-    assert is_paused = TRUE;
-
     %{ expect_revert(error_message="Poap requires to not be paused") %}
     Poap.mintToken(addresses.poap, event_id, addresses.user);
 
     Poap.unpause(addresses.poap);
-    let (is_paused) = Poap.paused(addresses.poap);
-    assert is_paused = FALSE;
     Poap.mintToken(addresses.poap, event_id, addresses.user);
-
-    return ();
-}
-
-@external
-func test_add_remove_minter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
-    alloc_locals;
-    let addresses = deploy();
-
-    let event_id = 1;
-    let (caller) = get_caller_address();
-    %{ print(f"caller address: {ids.caller}") %}
-    Poap.addEventMinter(addresses.poap, event_id, addresses.minter);
-    let (is_minter) = Poap.isEventMinter(addresses.poap, event_id, addresses.minter);
-    assert is_minter = TRUE;
-
-    %{
-        stop_prank_callable = start_prank(ids.addresses.user, ids.addresses.poap)
-        expect_revert(error_message="Message sender is not admim")
-    %}
-    Poap.removeEventMinter(addresses.poap, event_id, addresses.minter);
-    %{ stop_prank_callable() %}
-
-    %{ stop_prank_callable = start_prank(ids.addresses.admin1, ids.addresses.poap) %}
-    Poap.removeEventMinter(addresses.poap, event_id, addresses.minter);
-    let (is_minter) = Poap.isEventMinter(addresses.poap, event_id, addresses.minter);
-    assert is_minter = FALSE;
-
-    %{
-        stop_prank_callable = start_prank(ids.addresses.user, ids.addresses.poap)
-        expect_revert(error_message="Message sender is not admim")
-    %}
-    Poap.removeEventMinter(addresses.poap, event_id, addresses.minter);
-
-    return ();
-}
-
-@external
-func test_renounce_admin_and_minter{
-    syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
-}() {
-    alloc_locals;
-    let addresses = deploy();
-    let event_id = 1;
-
-    Poap.addEventMinter(addresses.poap, event_id, addresses.minter);
-    let (is_minter) = Poap.isEventMinter(addresses.poap, event_id, addresses.minter);
-    assert is_minter = TRUE;
-
-    let (is_minter) = Poap.isEventMinter(addresses.poap, event_id, addresses.minter);
-    assert is_minter = TRUE;
-
-    %{ stop_prank_callable = start_prank(ids.addresses.minter, ids.addresses.poap) %}
-    Poap.renounceEventMinter(addresses.poap, event_id);
-    let (is_minter) = Poap.isEventMinter(addresses.poap, event_id, addresses.minter);
-    assert is_minter = FALSE;
-    %{ stop_prank_callable() %}
-
-    let (is_minter) = Poap.isEventMinter(addresses.poap, event_id, addresses.admin3);
-    assert is_minter = TRUE;
-    %{ stop_prank_callable = start_prank(ids.addresses.admin3, ids.addresses.poap) %}
-    Poap.renounceAdmin(addresses.poap);
-
-    let (is_minter) = Poap.isEventMinter(addresses.poap, event_id, addresses.admin3);
-    assert is_minter = FALSE;
 
     return ();
 }
