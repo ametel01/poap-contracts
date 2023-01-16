@@ -153,6 +153,12 @@ func unpause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() 
 }
 
 // ROLES
+
+@external
+func addAdmin{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(account: felt) {
+    PoapRoles.add_admin(account);
+    return ();
+}
 @external
 func addEventMinter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
     eventId: felt, account: felt
