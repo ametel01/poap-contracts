@@ -59,14 +59,17 @@ func tokenURI{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
 }
 
 @external
+func isEventMinter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(address: felt) {
+}
+
+// CORE FUNCTIONALITIES
+@external
 func setBaseURI{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
     base_token_uri_len: felt, base_token_uri: felt*
 ) {
     Poap.set_base_uri(base_token_uri_len, base_token_uri);
     return ();
 }
-
-// CORE FUNCTIONALITIES
 
 @external
 func approve{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
@@ -124,6 +127,7 @@ func mintUserToManyEvents{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_
     return ();
 }
 
+// PAUSABLE
 @external
 func pause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
     PoapPausable.pause();
@@ -134,4 +138,11 @@ func pause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
 func unpause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
     PoapPausable.unpause();
     return ();
+}
+
+@external
+func paused{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -> (res: felt) {
+    let res = PoapPausable.paused();
+
+    return (res,);
 }
