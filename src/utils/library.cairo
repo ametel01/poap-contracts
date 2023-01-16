@@ -2,6 +2,10 @@
 
 from starkware.cairo.common.memcpy import memcpy
 from starkware.cairo.common.alloc import alloc
+from starkware.cairo.common.bool import TRUE
+from starkware.cairo.common.math import assert_not_zero
+
+from starkware.starknet.common.syscalls import get_caller_address
 
 func concat_arr{range_check_ptr}(arr1_len: felt, arr1: felt*, arr2_len: felt, arr2: felt*) -> (
     res: felt*, res_len: felt
@@ -150,4 +154,11 @@ func _uint256_to_ss{range_check_ptr}(val: Uint256, res: felt*) -> (res_len: felt
     let (res_len) = _uint256_to_ss(remainder, res);
     assert res[res_len] = running_total;
     return (res_len=res_len + 1);
+}
+
+func assert_valid_address{range_check_ptr}(address: felt) {
+    with_attr error_message("Caller address is not a valid address: got {address}") {
+        assert_not_zero(address);
+    }
+    return ();
 }
