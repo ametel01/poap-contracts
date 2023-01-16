@@ -45,6 +45,9 @@ namespace Poap {
     func unpause() {
     }
 
+    func addAdmin(account: felt) {
+    }
+
     func addEventMinter(eventId: felt, account: felt) {
     }
 

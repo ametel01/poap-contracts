@@ -177,3 +177,74 @@ func test_pause_unpause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_ch
 
     return ();
 }
+
+@external
+func test_add_remove_minter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
+    alloc_locals;
+    let addresses = deploy();
+
+    let event_id = 1;
+
+    Poap.addEventMinter(addresses.poap, event_id, addresses.minter);
+    let (is_minter) = Poap.isEventMinter(addresses.poap, event_id, addresses.minter);
+    assert is_minter = TRUE;
+
+    %{
+        stop_prank_callable = start_prank(ids.addresses.user, ids.addresses.poap)
+        expect_revert(error_message="Message sender is not admim")
+    %}
+    Poap.removeEventMinter(addresses.poap, event_id, addresses.minter);
+    %{ stop_prank_callable() %}
+
+    %{ stop_prank_callable = start_prank(ids.addresses.admin1, ids.addresses.poap) %}
+    Poap.removeEventMinter(addresses.poap, event_id, addresses.minter);
+    let (is_minter) = Poap.isEventMinter(addresses.poap, event_id, addresses.minter);
+    assert is_minter = FALSE;
+
+    %{
+        stop_prank_callable = start_prank(ids.addresses.user, ids.addresses.poap)
+        expect_revert(error_message="Message sender is not admim")
+    %}
+    Poap.removeEventMinter(addresses.poap, event_id, addresses.minter);
+
+    %{ stop_prank_callable = start_prank(ids.addresses.admin1, ids.addresses.poap) %}
+    let (is_admin) = Poap.isEventMinter(addresses.poap, addresses.user, event_id);
+    assert is_admin = FALSE;
+    Poap.addAdmin(addresses.poap, addresses.user);
+    let (is_admin) = Poap.isEventMinter(addresses.poap, addresses.user, event_id);
+    assert is_admin = TRUE;
+
+    return ();
+}
+
+@external
+func test_renounce_admin_and_minter{
+    syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
+}() {
+    alloc_locals;
+    let addresses = deploy();
+    let event_id = 1;
+
+    Poap.addEventMinter(addresses.poap, event_id, addresses.minter);
+    let (is_minter) = Poap.isEventMinter(addresses.poap, event_id, addresses.minter);
+    assert is_minter = TRUE;
+
+    let (is_minter) = Poap.isEventMinter(addresses.poap, event_id, addresses.minter);
+    assert is_minter = TRUE;
+
+    %{ stop_prank_callable = start_prank(ids.addresses.minter, ids.addresses.poap) %}
+    Poap.renounceEventMinter(addresses.poap, event_id);
+    let (is_minter) = Poap.isEventMinter(addresses.poap, event_id, addresses.minter);
+    assert is_minter = FALSE;
+    %{ stop_prank_callable() %}
+
+    let (is_minter) = Poap.isEventMinter(addresses.poap, event_id, addresses.admin3);
+    assert is_minter = TRUE;
+    %{ stop_prank_callable = start_prank(ids.addresses.admin3, ids.addresses.poap) %}
+    Poap.renounceAdmin(addresses.poap);
+
+    let (is_minter) = Poap.isEventMinter(addresses.poap, event_id, addresses.admin3);
+    assert is_minter = FALSE;
+
+    return ();
+}
