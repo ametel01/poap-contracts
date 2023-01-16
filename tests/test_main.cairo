@@ -1,6 +1,7 @@
 %lang starknet
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
+from starkware.cairo.common.bool import TRUE, FALSE
 from starkware.cairo.common.uint256 import Uint256
 from tests.setup import deploy, Addresses, NAME, SYMBOL
 from tests.interface import Poap
@@ -57,7 +58,7 @@ func test_mint{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
     %{ stop_prank_callable() %}
 
     %{ stop_prank_callable = start_prank(ids.addresses.user, ids.addresses.poap) %}
-    %{ expect_revert(error_message="Account is not minter or admin") %}
+    %{ expect_revert(error_message="Message sender is not admim or minter") %}
     Poap.mintToken(addresses.poap, event_id, addresses.admin1);
     %{ stop_prank_callable() %}
 
