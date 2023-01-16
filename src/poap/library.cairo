@@ -130,7 +130,6 @@ namespace Poap {
         PoapPausable.when_not_paused();
         let (last_id) = Poap_lastId.read();
         let (current_id, _) = uint256_add(last_id, Uint256(1, 0));
-        Poap_lastId.write(current_id);
         return _mint_token(event_id, current_id, to);
     }
 
@@ -212,6 +211,7 @@ func _mint_token{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
     event_id: felt, token_id: Uint256, to: felt
 ) -> felt {
     ERC721._mint(to, token_id);
+    Poap_lastId.write(token_id);
     Poap_tokenEvent.write(token_id, event_id);
     EventToken.emit(event_id, token_id);
     return (TRUE);
