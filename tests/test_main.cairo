@@ -118,3 +118,46 @@ func test_mint_event_to_many{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, ran
 
     return ();
 }
+
+@external
+func test_mint_user_to_many_events{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    ) {
+    alloc_locals;
+    let addresses = deploy();
+
+    local events: felt* = new (1, 2, 3, 4, 5);
+    %{ stop_prank_callable = start_prank(ids.addresses.admin1, ids.addresses.poap) %}
+    Poap.mintUserToManyEvents(addresses.poap, 5, events, addresses.user);
+
+    let (token_id, event_id) = Poap.tokenDetailsOfOwnerByIndex(
+        addresses.poap, addresses.user, Uint256(0, 0)
+    );
+    assert token_id = Uint256(1, 0);
+    assert event_id = 1;
+
+    let (token_id, event_id) = Poap.tokenDetailsOfOwnerByIndex(
+        addresses.poap, addresses.user, Uint256(1, 0)
+    );
+    assert token_id = Uint256(2, 0);
+    assert event_id = 2;
+
+    let (token_id, event_id) = Poap.tokenDetailsOfOwnerByIndex(
+        addresses.poap, addresses.user, Uint256(2, 0)
+    );
+    assert token_id = Uint256(3, 0);
+    assert event_id = 3;
+
+    let (token_id, event_id) = Poap.tokenDetailsOfOwnerByIndex(
+        addresses.poap, addresses.user, Uint256(3, 0)
+    );
+    assert token_id = Uint256(4, 0);
+    assert event_id = 4;
+
+    let (token_id, event_id) = Poap.tokenDetailsOfOwnerByIndex(
+        addresses.poap, addresses.user, Uint256(4, 0)
+    );
+    assert token_id = Uint256(5, 0);
+    assert event_id = 5;
+
+    return ();
+}
