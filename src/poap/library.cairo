@@ -58,6 +58,14 @@ namespace Poap {
         return res;
     }
 
+    func owner_of{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+        token_id: Uint256
+    ) -> felt {
+        let (owner) = ERC721.owner_of(token_id);
+
+        return owner;
+    }
+
     func token_event{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         token_id: Uint256
     ) -> felt {
@@ -151,7 +159,7 @@ namespace Poap {
         PoapRoles.only_event_minter(event_id);
         PoapPausable.when_not_paused();
         let (last_id) = Poap_lastId.read();
-        let (current_id, _) = uint256_add(last_id, Uint256(i + 1, 0));
+        let (current_id, _) = uint256_add(last_id, Uint256(1, 0));
         if (i == to_len) {
             Poap_lastId.write(current_id);
             return (TRUE);
