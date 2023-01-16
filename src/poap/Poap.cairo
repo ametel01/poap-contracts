@@ -4,6 +4,7 @@ from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.uint256 import Uint256
 from poap.library import Poap
 from pausable.library import PoapPausable
+from roles.library import PoapRoles
 
 @constructor
 func constructor{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
@@ -66,7 +67,11 @@ func paused{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -
 }
 
 @external
-func isEventMinter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(address: felt) {
+func isEventMinter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    eventId: felt, address: felt
+) -> (res: felt) {
+    let res = PoapRoles.is_event_minter(eventId, address);
+    return (res,);
 }
 
 // CORE FUNCTIONALITIES
@@ -144,5 +149,36 @@ func pause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
 @external
 func unpause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
     PoapPausable.unpause();
+    return ();
+}
+
+// ROLES
+@external
+func addEventMinter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    eventId: felt, account: felt
+) {
+    PoapRoles.add_event_minter(eventId, account);
+    return ();
+}
+
+@external
+func removeEventMinter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    eventId: felt, account: felt
+) {
+    PoapRoles.remove_event_minter(eventId, account);
+    return ();
+}
+
+@external
+func renounceEventMinter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
+    eventId: felt
+) {
+    PoapRoles.renounce_event_minter(eventId);
+    return ();
+}
+
+@external
+func renounceAdmin{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
+    PoapRoles.renounce_admin();
     return ();
 }
