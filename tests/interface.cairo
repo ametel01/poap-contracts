@@ -10,6 +10,9 @@ namespace Poap {
     func symbol() -> (res: felt) {
     }
 
+    func tokenEvent(token1_id: Uint256) -> (res: felt) {
+    }
+
     func mintToken(event_id: felt, to: felt) {
     }
 

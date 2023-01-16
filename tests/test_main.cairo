@@ -15,6 +15,13 @@ func test_views{syscall_ptr: felt*, range_check_ptr, pedersen_ptr: HashBuiltin*}
     let (symbol) = Poap.symbol(addresses.poap);
     assert symbol = SYMBOL;
 
+    let event_id = 1;
+    let token_id = Uint256(1, 0);
+    %{ stop_prank_callable = start_prank(ids.addresses.admin1, ids.addresses.poap) %}
+    Poap.mintToken(addresses.poap, event_id, addresses.admin2);
+    let (event) = Poap.tokenEvent(addresses.poap, token_id);
+    assert event = event_id;
+
     return ();
 }
 
