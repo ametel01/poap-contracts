@@ -58,6 +58,13 @@ func tokenURI{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
     return (uri_len, uri);
 }
 
+@view
+func paused{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -> (res: felt) {
+    let res = PoapPausable.paused();
+
+    return (res,);
+}
+
 @external
 func isEventMinter{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(address: felt) {
 }
@@ -138,11 +145,4 @@ func pause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
 func unpause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
     PoapPausable.unpause();
     return ();
-}
-
-@external
-func paused{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -> (res: felt) {
-    let res = PoapPausable.paused();
-
-    return (res,);
 }
