@@ -40,15 +40,11 @@ func Poap_tokenEvent(token_id: Uint256) -> (event_id: felt) {
 }
 
 namespace Poap {
-    // @dev Gets the token name
-    // @return string representing the token name
     func name{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -> felt {
         let (res) = Poap_name.read();
         return res;
     }
 
-    // @dev Gets the token symbol
-    // @return string representing the token symbol
     func symbol{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -> felt {
         let (res) = Poap_symbol.read();
         return res;
@@ -69,10 +65,6 @@ namespace Poap {
         return res;
     }
 
-    // @dev Gets the token ID at a given index of the tokens list of the requested owner
-    // @param owner address owning the tokens list to be accessed
-    // @param index uint256 representing the index to be accessed of the requested tokens list
-    // @return uint256 token ID at the given index of the tokens list owned by the requested address
     func token_details_of_owner_by_index{
         syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr
     }(owner: felt, index: Uint256) -> (token_id: Uint256, event_id: felt) {
@@ -81,8 +73,6 @@ namespace Poap {
         return (token_id, event_id);
     }
 
-    // @dev Gets the token uri
-    // @return string representing the token uri
     func token_uri{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         token_id: Uint256
     ) -> (uri_len: felt, token_uri: felt*) {
@@ -123,10 +113,6 @@ namespace Poap {
         return ();
     }
 
-    // @dev Function to mint tokens
-    // @param eventId EventId for the new token
-    // @param to The address that will receive the minted tokens.
-    // @return A boolean that indicates if the operation was successful.
     func mint_token{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         event_id: felt, to: felt
     ) -> felt {
@@ -145,10 +131,6 @@ namespace Poap {
         return _mint_token(event_id, token_id, to);
     }
 
-    // @dev Function to mint tokens
-    // @param eventId EventId for the new token
-    // @param to The address that will receive the minted tokens.
-    // @return A boolean that indicates if the operation was successful.
     func mint_event_to_many_users{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         event_id: felt, to_len: felt, to: felt*, i: felt
     ) -> felt {
@@ -164,10 +146,6 @@ namespace Poap {
         return mint_event_to_many_users(event_id, to_len, to, i + 1);
     }
 
-    // @dev Function to mint tokens
-    // @param eventIds EventIds to assing to user
-    // @param to The address that will receive the minted tokens.
-    // @return A boolean that indicates if the operation was successful.
     func mint_user_to_many_events{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}(
         events_len: felt, events: felt*, to: felt, i: felt
     ) -> felt {

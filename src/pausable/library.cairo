@@ -26,7 +26,6 @@ namespace PoapPausable {
         return ();
     }
 
-    // * @return true if the contract is paused, false otherwise.
     func paused{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() -> felt {
         let (res) = Poap_pausable_paused.read();
         return res;
@@ -50,7 +49,6 @@ namespace PoapPausable {
         return ();
     }
 
-    // @dev called by the owner to pause, triggers stopped state
     func pause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
         PoapRoles.only_admin();
         when_not_paused();
@@ -60,7 +58,6 @@ namespace PoapPausable {
         return ();
     }
 
-    // @dev called by the owner to unpause, returns to normal state
     func unpause{syscall_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr}() {
         PoapRoles.only_admin();
         when_not_paused();
